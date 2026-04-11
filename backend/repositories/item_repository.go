@@ -1,11 +1,12 @@
 package repositories
 
-import(
+import (
+	"antis/backend/models"
 	"context"
-	"time"
 	"database/sql"
-    "antis/backend/models"
-    "github.com/jmoiron/sqlx"
+	"fmt"
+	"time"
+	"github.com/jmoiron/sqlx"
 )
 
 
@@ -34,8 +35,9 @@ func (r *ItemRepository) GetByID(ctx context.Context, id int64) (*models.Item, e
 	
 	var user models.Item
 
-	query := `SELECT id, name, description, created_at`
+	query := `SELECT id, name, description, created_at FROM items WHERE id = $1`
 	err := r.db.GetContext(ctx, &user, query, id)
+
 	if err == sql.ErrNoRows {
 		return nil, nil
 	}
@@ -45,10 +47,10 @@ func (r *ItemRepository) GetByID(ctx context.Context, id int64) (*models.Item, e
 func (r *ItemRepository) GetAllItems(ctx context.Context)([]models.Item, error) {
 	var items []models.Item
 	query := `SELECT id, name, description, created_at FROM items ORDER BY id`
-	err := r.db.GetContext(ctx, &items, query )
+	err := r.db.SelectContext(ctx, &items, query )
 
 	if err != nil {
-		 return nil,nil
+		 return nil, fmt.Errorf("failed to get items: %w", err)
 	}
 
 	if items == nil {

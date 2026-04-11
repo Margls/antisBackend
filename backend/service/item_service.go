@@ -2,16 +2,15 @@ package service
 
 import (
 	"context"
-	// "errors"
 	"antis/backend/models"
 	"antis/backend/repositories"
 )
 
 type ItemService struct {
-	repo repositories.ItemRepository
+	repo *repositories.ItemRepository
 }
 
-func NewItemService(repo repositories.ItemRepository) *ItemService {
+func NewItemService(repo *repositories.ItemRepository) *ItemService {
 	return &ItemService{repo: repo}
 }
 

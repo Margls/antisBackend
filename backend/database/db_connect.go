@@ -1,8 +1,7 @@
 package database
 
-import(
-	"database/sql"
-	"github.com/lib/pq"
+import (
+	_ "github.com/lib/pq"
 	"github.com/jmoiron/sqlx"
 )
 

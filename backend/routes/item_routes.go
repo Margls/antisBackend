@@ -8,5 +8,7 @@ import (
 func SetupItemRoute(r chi.Router, itemHandler *handlers.ItemHandler){
 	r.Route("/items", func(r chi.Router) {
 		r.Get("/", itemHandler.GetAllItems)
+		r.Post("/create_item", itemHandler.CreateItem)
+		r.Get("/{id}",itemHandler.GetItemById)
 	})
 }

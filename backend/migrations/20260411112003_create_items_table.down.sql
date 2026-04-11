@@ -1,0 +1,2 @@
+DROP INDEX IF EXISTS idx_items_price;
+DROP TABLE IF EXISTS items;

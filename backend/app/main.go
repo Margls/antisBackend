@@ -3,32 +3,37 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
-	"antis/backend/service"
+
+	"antis/backend/config"
+	"antis/backend/database"
+	"antis/backend/handlers"
 	"antis/backend/repositories"
 	"antis/backend/routes"
-	"github.com/joho/godotenv"
-	"antis/backend/handlers"
+	"antis/backend/service"
 )
 
 func main() {
+	config.LoadEnv()
 
+	connStr, err := config.PostgresDSN()
+	if err != nil {
+		log.Fatalf("database configuration: %v", err)
+	}
 
-	user := os.Getenv("DB_USER")
-	password := os.Getenv("DB_PASSWORD")
-	host := os.Getenv("DB_HOST") 
-    port := os.Getenv("DB_PORT")
-    dbname := os.Getenv("DB_NAME")
-    sslmode := os.Getenv("DB_SSLMODE")
+	db, err := database.NewDB(connStr)
+	if err != nil {
+		log.Fatalf("failed to connect to DB: %v", err)
+	}
+	defer db.Close()
 
 	
 	log.Println("Server started on :8080")
 
 
-	itemsRepo := repositories.NewItemRepository()
-	itemService := service.NewItemService()
-	itemHandler := handlers.NewItemHandler()
-	router := routes.SetupRouter()
+	itemsRepo := repositories.NewItemRepository(db)
+	itemService := service.NewItemService(itemsRepo)
+	itemHandler := handlers.NewItemHandler(itemService)
+	router := routes.SetupRouter(itemHandler)
 
 
 

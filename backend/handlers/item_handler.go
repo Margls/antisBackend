@@ -58,6 +58,7 @@ func (h *ItemHandler) GetItemById (w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid user ID", http.StatusBadRequest)
         return
 	}
+
 	 item, err := h.service.GetItemById(r.Context(), id)
 
 	 if err != nil {
